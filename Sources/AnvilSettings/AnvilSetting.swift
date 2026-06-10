@@ -60,12 +60,14 @@ final class SettingStorage<T: Codable & Sendable> {
         self.key = key
         self.defaultValue = defaultValue
         self.defaults = defaults
-        self.value = SettingStorage.load(key: key, defaultValue: defaultValue, defaults: defaults, decoder: decoder)
+        value = SettingStorage.load(key: key, defaultValue: defaultValue, defaults: defaults, decoder: decoder)
     }
 
     private static func load(key: String, defaultValue: T, defaults: UserDefaults, decoder: JSONDecoder) -> T {
-        if let direct = T.self as? any DirectlyStorable.Type,
-           let retrieved = direct.retrieve(from: defaults, key: key) as? T {
+        if
+            let direct = T.self as? any DirectlyStorable.Type,
+            let retrieved = direct.retrieve(from: defaults, key: key) as? T
+        {
             return retrieved
         }
         guard let data = defaults.data(forKey: key) else { return defaultValue }

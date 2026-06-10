@@ -4,12 +4,12 @@ import Testing
 
 // MARK: - Test Helpers
 
-struct TestTheme: Codable, Sendable, Equatable {
+struct TestTheme: Codable, Equatable {
     var name: String
     var accentColor: String
 }
 
-// Use a dedicated UserDefaults suite for tests to avoid polluting standard defaults
+/// Use a dedicated UserDefaults suite for tests to avoid polluting standard defaults
 extension UserDefaults {
     static func testSuite(_ name: String) -> UserDefaults {
         let suite = UserDefaults(suiteName: name)!
@@ -22,9 +22,8 @@ extension UserDefaults {
 
 @Suite("AnvilSettings")
 struct AnvilSettingsTests {
-
     @Test("stores and retrieves String")
-    func getSetString() async throws {
+    func getSetString() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 
@@ -35,7 +34,7 @@ struct AnvilSettingsTests {
     }
 
     @Test("stores and retrieves Int")
-    func getSetInt() async throws {
+    func getSetInt() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 
@@ -46,7 +45,7 @@ struct AnvilSettingsTests {
     }
 
     @Test("stores and retrieves Double")
-    func getSetDouble() async throws {
+    func getSetDouble() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 
@@ -57,7 +56,7 @@ struct AnvilSettingsTests {
     }
 
     @Test("stores and retrieves Bool")
-    func getSetBool() async throws {
+    func getSetBool() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 
@@ -68,7 +67,7 @@ struct AnvilSettingsTests {
     }
 
     @Test("stores and retrieves Data")
-    func getSetData() async throws {
+    func getSetData() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
         let data = "hello".data(using: .utf8)!
@@ -80,7 +79,7 @@ struct AnvilSettingsTests {
     }
 
     @Test("stores and retrieves Codable struct")
-    func getSetCodable() async throws {
+    func getSetCodable() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
         let theme = TestTheme(name: "Dark", accentColor: "#FF0000")
@@ -92,7 +91,7 @@ struct AnvilSettingsTests {
     }
 
     @Test("returns nil for missing key")
-    func missingKeyReturnsNil() async throws {
+    func missingKeyReturnsNil() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 
@@ -102,7 +101,7 @@ struct AnvilSettingsTests {
     }
 
     @Test("remove deletes key")
-    func remove() async throws {
+    func remove() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 
@@ -114,7 +113,7 @@ struct AnvilSettingsTests {
     }
 
     @Test("contains returns correct value")
-    func contains() async throws {
+    func contains() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 
@@ -127,12 +126,12 @@ struct AnvilSettingsTests {
     }
 
     @Test("concurrent access is safe")
-    func concurrentAccess() async throws {
+    func concurrentAccess() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 
         await withTaskGroup(of: Void.self) { group in
-            for i in 0..<100 {
+            for i in 0 ..< 100 {
                 group.addTask {
                     await settings.set("counter", value: i)
                 }
@@ -148,9 +147,8 @@ struct AnvilSettingsTests {
 
 @Suite("SettingsMigration")
 struct SettingsMigrationTests {
-
     @Test("rename preserves value")
-    func rename() async throws {
+    func rename() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 
@@ -167,7 +165,7 @@ struct SettingsMigrationTests {
     }
 
     @Test("delete removes key")
-    func delete() async throws {
+    func delete() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 
@@ -181,7 +179,7 @@ struct SettingsMigrationTests {
     }
 
     @Test("migration version is tracked")
-    func migrationVersion() async throws {
+    func migrationVersion() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 
@@ -194,7 +192,7 @@ struct SettingsMigrationTests {
     }
 
     @Test("migration is idempotent")
-    func migrationIdempotent() async throws {
+    func migrationIdempotent() async {
         let defaults = UserDefaults.testSuite(#function)
         let settings = AnvilSettings(defaults: defaults)
 

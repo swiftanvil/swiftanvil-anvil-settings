@@ -9,10 +9,10 @@ let package = Package(
         .macOS(.v15),
         .tvOS(.v18),
         .watchOS(.v11),
-        .visionOS(.v2),
+        .visionOS(.v2)
     ],
     products: [
-        .library(name: "AnvilSettings", targets: ["AnvilSettings"]),
+        .library(name: "AnvilSettings", targets: ["AnvilSettings"])
     ],
     targets: [
         .target(
@@ -21,7 +21,7 @@ let package = Package(
         .testTarget(
             name: "AnvilSettingsTests",
             dependencies: ["AnvilSettings"]
-        ),
+        )
     ],
     swiftLanguageModes: [.v6]
 )

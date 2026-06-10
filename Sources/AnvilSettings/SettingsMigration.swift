@@ -27,10 +27,10 @@ public struct SettingsMigration {
     ///
     /// The transform closure receives the old value and returns the new value.
     /// If the old key does not exist or the transform fails, nothing is changed.
-    public func transform<T: Codable & Sendable, U: Codable & Sendable>(
+    public func transform<T: Codable & Sendable>(
         _ oldKey: String,
         to newKey: String,
-        _ transform: (T) -> U?
+        _ transform: (T) -> (some Codable & Sendable)?
     ) {
         guard let data = defaults.data(forKey: oldKey) else { return }
         do {

@@ -19,8 +19,8 @@ public actor AnvilSettings {
     /// - Parameter defaults: The `UserDefaults` instance to use. Defaults to `.standard`.
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        self.encoder = JSONEncoder()
-        self.decoder = JSONDecoder()
+        encoder = JSONEncoder()
+        decoder = JSONDecoder()
     }
 
     // MARK: - Get / Set
@@ -29,7 +29,7 @@ public actor AnvilSettings {
     ///
     /// Primitive types (`String`, `Int`, `Double`, `Bool`, `Data`, `URL`)
     /// are stored directly. All other `Codable` types are JSON-encoded.
-    public func set<T: Codable & Sendable>(_ key: String, value: T) {
+    public func set(_ key: String, value: some Codable & Sendable) {
         if let direct = value as? any DirectlyStorable {
             direct.store(in: defaults, key: key)
         } else {
@@ -78,7 +78,9 @@ public actor AnvilSettings {
     // MARK: - Migration
 
     /// The current migration version stored in UserDefaults.
-    private var migrationVersionKey: String { "anvil.settings.migrationVersion" }
+    private var migrationVersionKey: String {
+        "anvil.settings.migrationVersion"
+    }
 
     /// Returns the current migration version.
     public func currentMigrationVersion() -> Int {
@@ -92,7 +94,7 @@ public actor AnvilSettings {
     ///     migrator.rename("oldKey", to: "newKey")
     /// }
     /// ```
-    public func migrate(from currentVersion: Int, to targetVersion: Int, _ block: (SettingsMigration) -> Void) {
+    public func migrate(from _: Int, to targetVersion: Int, _ block: (SettingsMigration) -> Void) {
         let storedVersion = currentMigrationVersion()
         guard storedVersion < targetVersion else { return }
 
@@ -111,37 +113,61 @@ protocol DirectlyStorable {
 }
 
 extension String: DirectlyStorable {
-    func store(in defaults: UserDefaults, key: String) { defaults.set(self, forKey: key) }
-    static func retrieve(from defaults: UserDefaults, key: String) -> String? { defaults.string(forKey: key) }
+    func store(in defaults: UserDefaults, key: String) {
+        defaults.set(self, forKey: key)
+    }
+
+    static func retrieve(from defaults: UserDefaults, key: String) -> String? {
+        defaults.string(forKey: key)
+    }
 }
 
 extension Int: DirectlyStorable {
-    func store(in defaults: UserDefaults, key: String) { defaults.set(self, forKey: key) }
+    func store(in defaults: UserDefaults, key: String) {
+        defaults.set(self, forKey: key)
+    }
+
     static func retrieve(from defaults: UserDefaults, key: String) -> Int? {
         defaults.object(forKey: key) as? Int
     }
 }
 
 extension Double: DirectlyStorable {
-    func store(in defaults: UserDefaults, key: String) { defaults.set(self, forKey: key) }
+    func store(in defaults: UserDefaults, key: String) {
+        defaults.set(self, forKey: key)
+    }
+
     static func retrieve(from defaults: UserDefaults, key: String) -> Double? {
         defaults.object(forKey: key) as? Double
     }
 }
 
 extension Bool: DirectlyStorable {
-    func store(in defaults: UserDefaults, key: String) { defaults.set(self, forKey: key) }
+    func store(in defaults: UserDefaults, key: String) {
+        defaults.set(self, forKey: key)
+    }
+
     static func retrieve(from defaults: UserDefaults, key: String) -> Bool? {
         defaults.object(forKey: key) as? Bool
     }
 }
 
 extension Data: DirectlyStorable {
-    func store(in defaults: UserDefaults, key: String) { defaults.set(self, forKey: key) }
-    static func retrieve(from defaults: UserDefaults, key: String) -> Data? { defaults.data(forKey: key) }
+    func store(in defaults: UserDefaults, key: String) {
+        defaults.set(self, forKey: key)
+    }
+
+    static func retrieve(from defaults: UserDefaults, key: String) -> Data? {
+        defaults.data(forKey: key)
+    }
 }
 
 extension URL: DirectlyStorable {
-    func store(in defaults: UserDefaults, key: String) { defaults.set(self, forKey: key) }
-    static func retrieve(from defaults: UserDefaults, key: String) -> URL? { defaults.url(forKey: key) }
+    func store(in defaults: UserDefaults, key: String) {
+        defaults.set(self, forKey: key)
+    }
+
+    static func retrieve(from defaults: UserDefaults, key: String) -> URL? {
+        defaults.url(forKey: key)
+    }
 }
